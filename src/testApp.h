@@ -5,13 +5,14 @@
 #include "laserTracker.h"
 #include "ofxOsc.h"
 #include "ofxXmlSettings.h"
+#include "ofxMidi.h"
 
 #define HOST "localhost"
 #define PORT1 12345
 #define PORT2 12346
 #define PORT3 12347
 
-#define NUM_BEAMS 3
+#define NUM_BEAMS 1
 
 //--------------------------------------------------------
 class testApp : public ofBaseApp{
@@ -30,6 +31,8 @@ public:
     
     laserTracker            myTracker;
     beam**                  myBeam;
+    
+    ofxMidiOut midiOut;
     
     ofPoint                 currentPoint;
     

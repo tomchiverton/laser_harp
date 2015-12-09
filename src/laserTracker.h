@@ -4,7 +4,7 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 
-#define DEVICE_ID 2
+#define DEVICE_ID 0
 
 class laserTracker{
     
@@ -21,7 +21,9 @@ public:
 private:
     
     ofVideoGrabber			vidGrabber;
-	
+
+    ofSoundPlayer mySound;
+    
 	ofxCvColorImage			colorImg;
 	ofxCvGrayscaleImage 	greyImage;
 	ofxCvGrayscaleImage 	greyBg;

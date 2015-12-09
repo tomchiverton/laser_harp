@@ -1,1 +1,1 @@
-ofxOpenCv ofxOsc ofxXmlSettings
+ofxOpenCv ofxOsc ofxXmlSettings ofxMidi

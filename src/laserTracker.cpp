@@ -2,12 +2,18 @@
 
 //---------------------------
 void laserTracker::setup(){
+   vidGrabber.listDevices();
     
+    vector< ofVideoDevice > devices = vidGrabber.listDevices();
+    for(int i = 0; i < devices.size(); i++) {
+        cout << "Device ID: " << devices[i].id << " Device Name: " << devices[i].deviceName << " Hardware Name: " << devices[i].hardwareName << " Is Available: " << devices[i].bAvailable << endl;
+    }
+    
+    vidGrabber.setVerbose(true);
     vidGrabber.setDeviceID(DEVICE_ID);
 	vidGrabber.setVerbose(true);
     vidGrabber.setDesiredFrameRate(60);
 	vidGrabber.initGrabber(320,240);
-	
     colorImg.allocate(320,240);
 	greyImage.allocate(320,240);
 	greyBg.allocate(320,240);
@@ -24,9 +30,9 @@ void laserTracker::setup(){
     //set these values for the current lighting situation
     //for low ambient lighting, setting R, G, and B thresh to max (254) will easily remove any background and cleanly detect the lasers
     //for higher ambient lighting, lower B and G thresh to allow for larger contours
-    redThresh = 254;
+    redThresh = 0;
     blueThresh = 0;
-    greenThresh = 0;
+    greenThresh = 190;
 }
 
 //---------------------------

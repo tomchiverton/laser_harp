@@ -2,14 +2,23 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
-	
+    
+    
+// print the available output ports to the console
+midiOut.listPorts(); // via instance
+//ofxMidiOut::listPorts(); // via static too
+
+// connect
+midiOut.openPort(0); // by number
+    	
+    
     ofBackground(100,100,100);
 	sender.setup( HOST, PORT1 );
     myTracker.setup();
     myBeam = new beam*[NUM_BEAMS];
     
     trig_thresh = 4; // [frames/fps]
-    dist_thresh = 4; // [pixels] threshold of pixels from contour centre to beam centre
+    dist_thresh = 205; // [pixels] threshold of pixels from contour centre to beam centre
     pixels = 20; // [pixels] min number of pixels for contour detection
     
     
@@ -47,6 +56,8 @@ void testApp::update(){
 	
     myTracker.update();
     
+    int beam_1_note=66;
+    
     if(myTracker.bNewFrame){
 			
 		// find contours which are between the size of 10 pixels and 1/8 the w*h pixels.
@@ -59,9 +70,12 @@ void testApp::update(){
 		if (contourFinder.nBlobs == 0){
             
             for(int i = 0; i < NUM_BEAMS; i++) m.addIntArg(0);
+//cout << " b " << contourFinder.nBlobs;
 			//for(int i = 0; i < NUM_BEAMS; i++) m.addIntArg((int)myBeam[i]->isBeamOn());
             //for(int i = 0; i < NUM_BEAMS; i++) m.addFloatArg(myBeam[i]->beamHeight());
 
+//out << "clear \n";            
+                        midiOut.sendNoteOff(1, beam_1_note, 64);
 			sender.sendMessage( m );
 			m.clear();
 		}else{
@@ -74,6 +88,7 @@ void testApp::update(){
                 currentPoint = contourFinder.blobs[i].centroid;
                 for(int j = 0; j < NUM_BEAMS; j++){
                     current_dist = myBeam[j]->distance(currentPoint);
+//cout << "X" << i << " j " << j << " dist " << current_dist << " from " << min_dist;
                     if(current_dist < min_dist){
                         min_dist = current_dist;
                         beam = j;
@@ -85,9 +100,21 @@ void testApp::update(){
                 min_dist = dist_thresh;
             }  
             
+            
+//cout << "beam 0 on " << myBeam[0]->isBeamOn()     <<   " h " <<      myBeam[0]->beamHeight() << " ";
             for(int i = 0; i < NUM_BEAMS; i++) m.addIntArg((int)myBeam[i]->isBeamOn());
             for(int i = 0; i < NUM_BEAMS; i++) m.addFloatArg(myBeam[i]->beamHeight());
             sender.sendMessage(m);
+//cout << "send \n";            
+            
+            if( myBeam[0]->beamHeight() != 1 && myBeam[0]->beamHeight() != 0){
+                midiOut.sendNoteOn(1, beam_1_note, 64 );//ofMap( myBeam[0]->beamHeight(), 0.1,1, 1,127, true ) );
+                midiOut.sendPitchBend(1, ofMap( myBeam[0]->beamHeight(), 0.1,1, 0, MIDI_MAX_BEND) );
+            }else{
+                midiOut.sendNoteOff(1, beam_1_note, 64 );
+            }
+                
+            
             m.clear();
 	    }
 	}
@@ -122,7 +149,7 @@ void testApp::draw(){
     }
     
 	char reportStr[1024];
-	sprintf(reportStr, "time threshold: %i (press: t/T)\ndistance threshold: %f (press d/D)\npixel threshold: %i (press p/P)", trig_thresh, dist_thresh, pixels);
+	sprintf(reportStr, "time threshold: %i (press: t/T)\ndistance threshold: %f (press d/D)\npixel threshold: %i (press p/P)\n1 set low, SHIFT-1 set high", trig_thresh, dist_thresh, pixels);
 	ofDrawBitmapString(reportStr,20, 390);
      
 }
