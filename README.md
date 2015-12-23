@@ -26,11 +26,15 @@ To make your own, you'll need:
 
 3. OpenFrameworks -> http://openframeworks.cc/download/
 
-  Ensure ofxOpenCv, ofxOsc and ofxXmlSettings addons are included in IDE
+  Ensure ofxOpenCv, ofxOsc and ofxXmlSettings addons are included in IDE. 
+  
+  You'll also need ofxMidi from https://github.com/danomatikaa/ofxMidi
 
   Max MSP (they offer a 30 day free trial -> http://cycling74.com/downloads/)
 
   ...or you can give Pure Date a whirl. It's open source!
+  
+  Or anything that talks MIDI, such as LMMS, Ableton Live etc
 
 Enjoy!
 
